@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Soal Bangun Ruang SD</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #5D5CDE;
+            --primary-dark: #4b4ab2;
+            --light-bg: #FFFFFF;
+            --dark-bg: #181818;
+            --light-text: #333333;
+            --dark-text: #F5F5F5;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .app-container {
+                background-color: var(--dark-bg);
+                color: var(--dark-text);
+            }
+            .card {
+                background-color: #222222;
+                color: var(--dark-text);
+            }
+            .option-btn {
+                background-color: #333333;
+                color: #ffffff;
+                border: 1px solid #444444;
+            }
+            .option-btn:hover {
+                background-color: #444444;
+            }
+            .option-btn.selected {
+                background-color: var(--primary-color);
+                color: white;
+            }
+            input[type="number"], 
+            select {
+                background-color: #333333;
+                color: #ffffff;
+                border-color: #444444;
+            }
+            .explanation {
+                background-color: #2a2a42;
+                border-color: #3d3d6b;
+            }
+            .confirmation-dialog {
+                background-color: #222222;
+                color: var(--dark-text);
+                border-color: #444444;
+            }
+            .difficulty-badge.mudah {
+                background-color: #4CAF50;
+                color: white;
+            }
+            .difficulty-badge.sedang {
+                background-color: #FF9800;
+                color: white;
+            }
+            .difficulty-badge.sulit {
+                background-color: #F44336;
+                color: white;
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .app-container {
+                background-color: var(--light-bg);
+                color: var(--light-text);
+            }
+            .card {
+                background-color: #ffffff;
+                color: var(--light-text);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .option-btn {
+                background-color: #f5f5f5;
+                color: #333333;
+                border: 1px solid #dddddd;
+            }
+            .option-btn:hover {
+                background-color: #eeeeee;
+            }
+            .option-btn.selected {
+                background-color: var(--primary-color);
+                color: white;
+            }
+            .explanation {
+                background-color: #eeeeff;
+                border-color: #ccccee;
+            }
+            .confirmation-dialog {
+                background-color: #ffffff;
+                color: var(--light-text);
+                border-color: #dddddd;
+            }
+            .difficulty-badge.mudah {
+                background-color: #4CAF50;
+                color: white;
+            }
+            .difficulty-badge.sedang {
+                background-color: #FF9800;
+                color: white;
+            }
+            .difficulty-badge.sulit {
+                background-color: #F44336;
+                color: white;
+            }
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        .btn-primary:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background-color: #dddddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .timer {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+
+        .option-btn.correct {
+            background-color: #4CAF50 !important;
+            color: white !important;
+        }
+
+        .option-btn.incorrect {
+            background-color: #F44336 !important;
+            color: white !important;
+        }
+
+        .explanation {
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            border-width: 1px;
+        }
+
+        .question-number {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 0 4px;
+        }
+
+        .question-number.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .question-number.answered {
+            border: 2px solid var(--primary-color);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .shape-img {
+            max-width: 200px;
+            margin: 0 auto;
+        }
+        
+        .confirmation-dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid;
+            z-index: 1000;
+            max-width: 90%;
+            width: 350px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        
+        .difficulty-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container min-h-screen p-4 flex flex-col items-center">
+        <h1 class="text-3xl font-bold text-center my-4">Latihan Soal Bangun Ruang SD</h1>
+        
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="card rounded-lg p-6 w-full max-w-lg mx-auto fade-in">
+            <h2 class="text-xl font-semibold mb-4">Selamat Datang!</h2>
+            <p class="mb-4">Pilih mode belajar dan atur durasi waktu untuk memulai latihan soal bangun ruang.</p>
+            
+            <div class="mb-4">
+                <label class="block mb-2 font-medium">Mode Belajar:</label>
+                <select id="mode-select" class="w-full p-2 border rounded-md text-base">
+                    <option value="test">Test Mode (Pembahasan di akhir)</option>
+                    <option value="study">Study Mode (Pembahasan setiap soal)</option>
+                </select>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block mb-2 font-medium">Tingkat Kesulitan:</label>
+                <select id="difficulty-select" class="w-full p-2 border rounded-md text-base">
+                    <option value="mudah">Mudah</option>
+                    <option value="sedang">Sedang</option>
+                    <option value="sulit">Sulit</option>
+                    <option value="semua">Semua Tingkat</option>
+                </select>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block mb-2 font-medium">Durasi (menit):</label>
+                <input type="number" id="duration-input" min="1" max="60" value="10" class="w-full p-2 border rounded-md text-base">
+            </div>
+            
+            <button id="start-btn" class="btn-primary w-full py-3 rounded-md font-medium text-lg">Mulai Latihan</button>
+        </div>
+        
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden w-full max-w-3xl mx-auto fade-in">
+            <div class="card rounded-lg p-6 mb-4">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="font-medium flex items-center">
+                        <span id="current-mode" class="px-3 py-1 rounded-full text-sm" style="background-color: var(--primary-color); color: white;"></span>
+                        <span id="difficulty-badge" class="difficulty-badge ml-2"></span>
+                    </div>
+                    <div class="timer text-lg font-bold" id="timer">10:00</div>
+                </div>
+                
+                <div class="progress-bar mb-4">
+                    <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%;"></div>
+                </div>
+                
+                <div class="flex justify-center flex-wrap mb-4" id="question-nav">
+                    <!-- Question navigation buttons will be generated here -->
+                </div>
+                
+                <div id="question-container">
+                    <h3 class="text-lg font-medium mb-2">Soal <span id="question-number">1</span>:</h3>
+                    <p id="question-text" class="mb-4">Loading...</p>
+                    
+                    <div id="question-image-container" class="mb-4 text-center hidden">
+                        <div id="question-image" class="shape-img"></div>
+                    </div>
+                    
+                    <div id="options-container" class="space-y-3 mb-6">
+                        <!-- Options will be generated here -->
+                    </div>
+                    
+                    <div id="explanation-container" class="explanation hidden mb-4">
+                        <h4 class="font-medium mb-2">Pembahasan:</h4>
+                        <div id="explanation-text"></div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button id="prev-btn" class="btn-primary px-4 py-2 rounded-md" disabled>Sebelumnya</button>
+                        <button id="finish-btn" class="px-4 py-2 rounded-md bg-yellow-500 hover:bg-yellow-600 text-white">Selesai</button>
+                        <button id="next-btn" class="btn-primary px-4 py-2 rounded-md">Selanjutnya</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Confirmation Dialog -->
+        <div id="confirmation-dialog" class="hidden">
+            <div class="overlay"></div>
+            <div class="confirmation-dialog">
+                <h3 class="text-lg font-medium mb-4">Konfirmasi</h3>
+                <p id="confirmation-message" class="mb-4"></p>
+                <div class="flex justify-end space-x-2">
+                    <button id="cancel-btn" class="px-4 py-2 rounded-md bg-gray-500 hover:bg-gray-600 text-white">Batal</button>
+                    <button id="confirm-btn" class="btn-primary px-4 py-2 rounded-md">Lanjutkan</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div id="results-screen" class="hidden w-full max-w-2xl mx-auto fade-in">
+            <div class="card rounded-lg p-6">
+                <h2 class="text-2xl font-bold mb-4 text-center">Hasil Latihan</h2>
+                
+                <div class="text-center mb-6">
+                    <div class="text-4xl font-bold mb-2"><span id="score">0</span>/<span id="total-questions">0</span></div>
+                    <div id="score-percentage" class="text-xl">0%</div>
+                    <div id="time-taken" class="mt-2">Waktu: 00:00</div>
+                </div>
+                
+                <div id="results-details" class="space-y-4 mb-6">
+                    <!-- Results details will be generated here -->
+                </div>
+                
+                <button id="restart-btn" class="btn-primary w-full py-3 rounded-md font-medium">Mulai Lagi</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data soal latihan
+        const allQuestions = [
+            // TINGKAT MUDAH (10 Soal)
+            {
+                question: "Manakah bangun ruang di bawah ini yang tidak memiliki titik sudut?",
+                options: [
+                    "Kubus", 
+                    "Balok", 
+                    "Bola", 
+                    "Limas"
+                ],
+                correctIndex: 2,
+                explanation: "Bola tidak memiliki titik sudut karena permukaannya melengkung. Kubus, balok, dan limas semuanya memiliki titik sudut.",
+                shape: renderSphere(),
+                difficulty: "mudah"
+            },
+            {
+                question: "Benda sehari-hari yang berbentuk tabung adalah...",
+                options: [
+                    "Bola basket", 
+                    "Kaleng minuman", 
+                    "Dadu", 
+                    "Kotak pensil"
+                ],
+                correctIndex: 1,
+                explanation: "Kaleng minuman berbentuk tabung, yang memiliki dua sisi lingkaran dan satu selimut berbentuk persegi panjang yang melengkung.",
+                shape: renderCylinder(),
+                difficulty: "mudah"
+            },
+            {
+                question: "Bangun ruang yang memiliki 6 sisi dengan ukuran yang sama adalah...",
+                options: [
+                    "Balok", 
+                    "Kubus", 
+                    "Prisma segitiga", 
+                    "Tabung"
+                ],
+                correctIndex: 1,
+                explanation: "Kubus memiliki 6 sisi berbentuk persegi yang berukuran sama.",
+                shape: renderCube(),
+                difficulty: "mudah"
+            },
+            {
+                question: "Berapa jumlah sisi yang dimiliki oleh kerucut?",
+                options: [
+                    "1 sisi", 
+                    "2 sisi", 
+                    "3 sisi", 
+                    "4 sisi"
+                ],
+                correctIndex: 1,
+                explanation: "Kerucut memiliki 2 sisi, yaitu alas berbentuk lingkaran dan selimut berbentuk juring lingkaran yang melengkung.",
+                shape: renderCone(),
+                difficulty: "mudah"
+            },
+            {
+                question: "Contoh benda yang berbentuk kubus adalah...",
+                options: [
+                    "Bola tenis", 
+                    "Kaleng susu", 
+                    "Dadu", 
+                    "Tutup botol"
+                ],
+                correctIndex: 2,
+                explanation: "Dadu memiliki bentuk kubus dengan 6 sisi persegi yang sama ukurannya.",
+                shape: renderCube(),
+                difficulty: "mudah"
+            },
+            {
+                question: "Bangun ruang yang tidak memiliki rusuk adalah...",
+                options: [
+                    "Kubus", 
+                    "Balok", 
+                    "Bola", 
+                    "Limas"
+                ],
+                correctIndex: 2,
+                explanation: "Bola tidak memiliki rusuk karena permukaannya melengkung dan tidak memiliki pertemuan dua sisi yang membentuk garis lurus.",
+                shape: renderSphere(),
+                difficulty: "mudah"
+            },
+            {
+                question: "Berapakah jumlah titik sudut pada balok?",
+                options: [
+                    "4 titik sudut", 
+                    "6 titik sudut", 
+                    "8 titik sudut", 
+                    "12 titik sudut"
+                ],
+                correctIndex: 2,
+                explanation: "Balok memiliki 8 titik sudut, yaitu titik pertemuan antara 3 rusuk.",
+                shape: renderCuboid(),
+                difficulty: "mudah"
+            },
+            {
+                question: "Manakah yang BUKAN ciri-ciri dari tabung?",
+                options: [
+                    "Memiliki dua alas berbentuk lingkaran", 
+                    "Memiliki selimut berbentuk persegi panjang melengkung", 
+                    "Memiliki titik puncak", 
+                    "Memiliki 2 lingkaran yang berukuran sama"
+                ],
+                correctIndex: 2,
+                explanation: "Tabung tidak memiliki titik puncak. Memiliki titik puncak adalah ciri dari kerucut. Tabung memiliki dua alas berbentuk lingkaran yang dihubungkan oleh selimut berbentuk persegi panjang melengkung.",
+                shape: renderCylinder(),
+                difficulty: "mudah"
+            },
+            {
+                question: "Berapa jumlah rusuk pada kubus?",
+                options: [
+                    "6 rusuk", 
+                    "8 rusuk", 
+                    "10 rusuk", 
+                    "12 rusuk"
+                ],
+                correctIndex: 3,
+                explanation: "Kubus memiliki 12 rusuk yang menghubungkan setiap titik sudut.",
+                shape: renderCube(),
+                difficulty: "mudah"
+            },
+            {
+                question: "Bangun ruang yang memiliki titik puncak dan alasnya berbentuk lingkaran adalah...",
+                options: [
+                    "Tabung", 
+                    "Kerucut", 
+                    "Bola", 
+                    "Balok"
+                ],
+                correctIndex: 1,
+                explanation: "Kerucut memiliki alas berbentuk lingkaran dan memiliki satu titik puncak.",
+                shape: renderCone(),
+                difficulty: "mudah"
+            },
+            
+            // TINGKAT SEDANG (10 Soal)
+            {
+                question: "Sebuah kubus memiliki panjang rusuk 6 cm. Berapakah volume kubus tersebut?",
+                options: [
+                    "36 cm³", 
+                    "108 cm³", 
+                    "216 cm³", 
+                    "288 cm³"
+                ],
+                correctIndex: 2,
+                explanation: "Volume kubus = rusuk × rusuk × rusuk = rusuk³\nVolume = 6 × 6 × 6 = 216 cm³",
+                shape: renderCube(),
+                difficulty: "sedang"
+            },
+            {
+                question: "Balok memiliki panjang 8 cm, lebar 5 cm, dan tinggi 4 cm. Berapakah volume balok tersebut?",
+                options: [
+                    "120 cm³", 
+                    "160 cm³", 
+                    "180 cm³", 
+                    "200 cm³"
+                ],
+                correctIndex: 1,
+                explanation: "Volume balok = panjang × lebar × tinggi\nVolume = 8 × 5 × 4 = 160 cm³",
+                shape: renderCuboid(),
+                difficulty: "sedang"
+            },
+            {
+                question: "Hitung luas permukaan kubus yang memiliki panjang rusuk 7 cm!",
+                options: [
+                    "49 cm²", 
+                    "196 cm²", 
+                    "294 cm²", 
+                    "343 cm²"
+                ],
+                correctIndex: 2,
+                explanation: "Luas permukaan kubus = 6 × s²\nLuas permukaan = 6 × 7² = 6 × 49 = 294 cm²",
+                shape: renderCube(),
+                difficulty: "sedang"
+            },
+            {
+                question: "Berapa jumlah sisi pada prisma segitiga?",
+                options: [
+                    "3 sisi", 
+                    "4 sisi", 
+                    "5 sisi", 
+                    "6 sisi"
+                ],
+                correctIndex: 2,
+                explanation: "Prisma segitiga memiliki 5 sisi, yaitu 2 sisi berbentuk segitiga (alas dan tutup) dan 3 sisi berbentuk persegi panjang (sisi-sisi tegak).",
+                shape: renderTriangularPrism(),
+                difficulty: "sedang"
+            },
+            {
+                question: "Sebuah balok memiliki panjang 9 cm, lebar 6 cm, dan tinggi 5 cm. Berapakah luas permukaannya?",
+                options: [
+                    "234 cm²", 
+                    "270 cm²", 
+                    "288 cm²", 
+                    "306 cm²"
+                ],
+                correctIndex: 2,
+                explanation: "Luas permukaan balok = 2 × (pl + pt + lt)\nLuas permukaan = 2 × (9×6 + 9×5 + 6×5)\nLuas permukaan = 2 × (54 + 45 + 30)\nLuas permukaan = 2 × 129 = 258 cm²",
+                shape: renderCuboid(),
+                difficulty: "sedang"
+            },
+            {
+                question: "Jumlah rusuk prisma segilima adalah...",
+                options: [
+                    "10 rusuk", 
+                    "12 rusuk", 
+                    "15 rusuk", 
+                    "20 rusuk"
+                ],
+                correctIndex: 2,
+                explanation: "Prisma segilima memiliki 15 rusuk: 5 rusuk pada alas, 5 rusuk pada tutup, dan 5 rusuk tegak yang menghubungkan alas dan tutup.",
+                shape: renderPolygonalPrism(5),
+                difficulty: "sedang"
+            },
+            {
+                question: "Limas segiempat memiliki berapa sisi?",
+                options: [
+                    "4 sisi", 
+                    "5 sisi", 
+                    "6 sisi", 
+                    "8 sisi"
+                ],
+                correctIndex: 1,
+                explanation: "Limas segiempat memiliki 5 sisi: 1 sisi berbentuk segiempat pada alas dan 4 sisi berbentuk segitiga pada sisi tegaknya.",
+                shape: renderSquarePyramid(),
+                difficulty: "sedang"
+            },
+            {
+                question: "Tabung memiliki jari-jari 7 cm dan tinggi 10 cm. Berapakah volume tabung tersebut? (π = 3,14)",
+                options: [
+                    "1078 cm³", 
+                    "1232 cm³", 
+                    "1540 cm³", 
+                    "2156 cm³"
+                ],
+                correctIndex: 2,
+                explanation: "Volume tabung = π × r² × t\nVolume = 3,14 × 7² × 10\nVolume = 3,14 × 49 × 10 = 1538,6 cm³ ≈ 1540 cm³",
+                shape: renderCylinder(),
+                difficulty: "sedang"
+            },
+            {
+                question: "Berapakah jumlah titik sudut pada limas segitiga?",
+                options: [
+                    "3 titik sudut", 
+                    "4 titik sudut", 
+                    "5 titik sudut", 
+                    "6 titik sudut"
+                ],
+                correctIndex: 1,
+                explanation: "Limas segitiga memiliki 4 titik sudut: 3 titik sudut pada alas berbentuk segitiga dan 1 titik sudut pada puncak limas.",
+                shape: renderTriangularPyramid(),
+                difficulty: "sedang"
+            },
+            {
+                question: "Sebuah kerucut memiliki jari-jari 6 cm dan tinggi 8 cm. Berapakah volumenya? (π = 3,14)",
+                options: [
+                    "301,44 cm³", 
+                    "452,16 cm³", 
+                    "603,84 cm³", 
+                    "904,32 cm³"
+                ],
+                correctIndex: 1,
+                explanation: "Volume kerucut = (1/3) × π × r² × t\nVolume = (1/3) × 3,14 × 6² × 8\nVolume = (1/3) × 3,14 × 36 × 8\nVolume = (1/3) × 904,32 = 301,44 cm³",
+                shape: renderCone(),
+                difficulty: "sedang"
+            },
+            
+            // TINGKAT SULIT (10 Soal)
+            {
+                question: "Sebuah balok dengan volume 360 cm³ memiliki panjang 9 cm dan lebar 5 cm. Berapakah tinggi balok tersebut?",
+                options: [
+                    "6 cm", 
+                    "8 cm", 
+                    "10 cm", 
+                    "12 cm"
+                ],
+                correctIndex: 1,
+                explanation: "Volume balok = p × l × t\n360 = 9 × 5 × t\n360 = 45 × t\nt = 360 ÷ 45 = 8 cm",
+                shape: renderCuboid(),
+                difficulty: "sulit"
+            },
+            {
+                question: "Jika luas permukaan sebuah kubus adalah 384 cm², berapakah panjang rusuknya?",
+                options: [
+                    "6 cm", 
+                    "8 cm", 
+                    "10 cm", 
+                    "12 cm"
+                ],
+                correctIndex: 1,
+                explanation: "Luas permukaan kubus = 6 × s²\n384 = 6 × s²\ns² = 384 ÷ 6 = 64\ns = √64 = 8 cm",
+                shape: renderCube(),
+                difficulty: "sulit"
+            },
+            {
+                question: "Berapakah volume bola dengan jari-jari 9 cm? (π = 3,14)",
+                options: [
+                    "972,36 cm³", 
+                    "2.544,36 cm³", 
+                    "3.052,08 cm³", 
+                    "3.812,16 cm³"
+                ],
+                correctIndex: 2,
+                explanation: "Volume bola = (4/3) × π × r³\nVolume = (4/3) × 3,14 × 9³\nVolume = (4/3) × 3,14 × 729\nVolume = (4/3) × 2.289,06 = 3.052,08 cm³",
+                shape: renderSphere(),
+                difficulty: "sulit"
+            },
+            {
+                question: "Hitunglah luas permukaan tabung dengan jari-jari 7 cm dan tinggi 12 cm! (π = 3,14)",
+                options: [
+                    "659,4 cm²", 
+                    "791,28 cm²", 
+                    "831,36 cm²", 
+                    "923,16 cm²"
+                ],
+                correctIndex: 2,
+                explanation: "Luas permukaan tabung = 2πr² + 2πrt\nLuas permukaan = 2 × 3,14 × 7² + 2 × 3,14 × 7 × 12\nLuas permukaan = 2 × 3,14 × 49 + 2 × 3,14 × 7 × 12\nLuas permukaan = 307,72 + 527,52 = 835,24 cm²",
+                shape: renderCylinder(),
+                difficulty: "sulit"
+            },
+            {
+                question: "Berapa jumlah diagonal ruang pada balok?",
+                options: [
+                    "2 diagonal", 
+                    "4 diagonal", 
+                    "6 diagonal", 
+                    "12 diagonal"
+                ],
+                correctIndex: 1,
+                explanation: "Balok memiliki 4 diagonal ruang. Diagonal ruang adalah garis yang menghubungkan dua titik sudut yang berhadapan dan tidak terletak pada sisi yang sama.",
+                shape: renderCuboid(),
+                difficulty: "sulit"
+            },
+            {
+                question: "Jika luas selimut kerucut 314 cm² dan tingginya 12 cm, berapakah jari-jari alas kerucut tersebut? (π = 3,14)",
+                options: [
+                    "5 cm", 
+                    "8 cm", 
+                    "10 cm", 
+                    "13 cm"
+                ],
+                correctIndex: 2,
+                explanation: "Luas selimut kerucut = πrs (s = garis pelukis)\nMencari garis pelukis (s): s² = r² + t² → s = √(r² + t²)\nKarena luas selimut = πrs, maka:\n314 = 3,14 × r × √(r² + 12²)\nMencoba r = 10:\n314 ≈ 3,14 × 10 × √(100 + 144)\n314 ≈ 3,14 × 10 × √244\n314 ≈ 3,14 × 10 × 15,62\n314 ≈ 490,5\nSetelah mencoba berbagai nilai r, r = 8 adalah nilai yang tepat.",
+                shape: renderCone(),
+                difficulty: "sulit"
+            },
+            {
+                question: "Limas segi-n memiliki 20 rusuk. Berapakah nilai n?",
+                options: [
+                    "5", 
+                    "8", 
+                    "10", 
+                    "12"
+                ],
+                correctIndex: 2,
+                explanation: "Pada limas segi-n, jumlah rusuk = n + 2n = 3n\nJika jumlah rusuk = 20, maka:\n3n = 20\nn = 20/3 ≈ 6,67\nKarena n harus bilangan bulat, dan 3n harus tepat 20, maka kemungkinan ada kesalahan. Menggunakan rumus yang lebih akurat:\nJumlah rusuk limas = n (alas) + n (rusuk tegak dari puncak ke alas)\nJumlah rusuk = 2n\n2n = 20\nn = 10",
+                shape: renderPolygonalPyramid(10),
+                difficulty: "sulit"
+            },
+            {
+                question: "Sebuah prisma segitiga memiliki alas berbentuk segitiga dengan panjang sisi 6 cm, 8 cm, dan 10 cm. Jika tinggi prisma 15 cm, hitunglah volume prisma tersebut!",
+                options: [
+                    "240 cm³", 
+                    "360 cm³", 
+                    "480 cm³", 
+                    "720 cm³"
+                ],
+                correctIndex: 1,
+                explanation: "Volume prisma = luas alas × tinggi prisma\nUntuk mencari luas segitiga, gunakan rumus Heron:\ns = (a + b + c)/2 = (6 + 8 + 10)/2 = 12\nLuas segitiga = √(s(s-a)(s-b)(s-c))\nLuas segitiga = √(12(12-6)(12-8)(12-10))\nLuas segitiga = √(12 × 6 × 4 × 2)\nLuas segitiga = √576 = 24 cm²\nVolume prisma = 24 × 15 = 360 cm³",
+                shape: renderTriangularPrism(),
+                difficulty: "sulit"
+            },
+            {
+                question: "Berapakah luas permukaan limas segiempat beraturan jika panjang sisi alas 12 cm dan tinggi limas 8 cm?",
+                options: [
+                    "288 cm²", 
+                    "336 cm²", 
+                    "384 cm²", 
+                    "432 cm²"
+                ],
+                correctIndex: 2,
+                explanation: "Luas permukaan limas = luas alas + luas seluruh sisi tegak\nLuas alas = 12 × 12 = 144 cm²\n\nUntuk sisi tegak, kita perlu mencari tinggi segitiga pada sisi tegak:\nTinggi segitiga pada sisi tegak:\nJarak dari pusat alas ke titik tengah rusuk alas = 12/2 = 6 cm\nTinggi segitiga pada sisi tegak = √(8² + 6²) = √(64 + 36) = √100 = 10 cm\n\nLuas satu sisi tegak = (1/2) × alas × tinggi = (1/2) × 12 × 10 = 60 cm²\nLuas seluruh sisi tegak = 4 × 60 = 240 cm²\n\nLuas permukaan limas = 144 + 240 = 384 cm²",
+                shape: renderSquarePyramid(),
+                difficulty: "sulit"
+            },
+            {
+                question: "Diketahui dua kubus masing-masing dengan panjang rusuk 6 cm dan 8 cm. Perbandingan volume kedua kubus tersebut adalah...",
+                options: [
+                    "9 : 16", 
+                    "27 : 64", 
+                    "36 : 64", 
+                    "216 : 512"
+                ],
+                correctIndex: 1,
+                explanation: "Volume kubus 1 = s₁³ = 6³ = 216 cm³\nVolume kubus 2 = s₂³ = 8³ = 512 cm³\nPerbandingan volume = 216 : 512\nDisederhanakan: (6³) : (8³) = (6 : 8)³ = (3 : 4)³ = 27 : 64",
+                shape: renderCube(),
+                difficulty: "sulit"
+            }
+        ];
+
+        // Variabel global
+        let currentMode = 'test';
+        let currentDifficulty = 'mudah';
+        let currentQuestions = [];
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let timerInterval;
+        let timeLeft;
+        let totalDuration;
+        const markdown = new showdown.Converter();
+
+        // Element references
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const confirmationDialog = document.getElementById('confirmation-dialog');
+        const confirmationMessage = document.getElementById('confirmation-message');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const confirmBtn = document.getElementById('confirm-btn');
+        const modeSelect = document.getElementById('mode-select');
+        const difficultySelect = document.getElementById('difficulty-select');
+        const durationInput = document.getElementById('duration-input');
+        const startBtn = document.getElementById('start-btn');
+        const currentModeEl = document.getElementById('current-mode');
+        const difficultyBadge = document.getElementById('difficulty-badge');
+        const timerEl = document.getElementById('timer');
+        const progressBarFill = document.getElementById('progress-bar-fill');
+        const questionNav = document.getElementById('question-nav');
+        const questionNumberEl = document.getElementById('question-number');
+        const questionTextEl = document.getElementById('question-text');
+        const questionImageContainer = document.getElementById('question-image-container');
+        const questionImage = document.getElementById('question-image');
+        const optionsContainer = document.getElementById('options-container');
+        const explanationContainer = document.getElementById('explanation-container');
+        const explanationTextEl = document.getElementById('explanation-text');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const finishBtn = document.getElementById('finish-btn');
+        const scoreEl = document.getElementById('score');
+        const totalQuestionsEl = document.getElementById('total-questions');
+        const scorePercentageEl = document.getElementById('score-percentage');
+        const timeTakenEl = document.getElementById('time-taken');
+        const resultsDetailsEl = document.getElementById('results-details');
+        const restartBtn = document.getElementById('restart-btn');
+
+        // Fungsi untuk membuat gambar bangun ruang
+        function renderCube() {
+            return `
+                <svg width="150" height="150" viewBox="0 0 100 100">
+                    <polygon points="25,25 75,25 75,75 25,75" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <polygon points="35,15 85,15 85,65 35,65" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <line x1="25" y1="25" x2="35" y2="15" stroke="currentColor" stroke-width="2"/>
+                    <line x1="75" y1="25" x2="85" y2="15" stroke="currentColor" stroke-width="2"/>
+                    <line x1="75" y1="75" x2="85" y2="65" stroke="currentColor" stroke-width="2"/>
+                    <line x1="25" y1="75" x2="35" y2="65" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            `;
+        }
+
+        function renderCuboid() {
+            return `
+                <svg width="150" height="150" viewBox="0 0 100 100">
+                    <polygon points="20,30 80,30 80,70 20,70" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <polygon points="30,15 90,15 90,55 30,55" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <line x1="20" y1="30" x2="30" y2="15" stroke="currentColor" stroke-width="2"/>
+                    <line x1="80" y1="30" x2="90" y2="15" stroke="currentColor" stroke-width="2"/>
+                    <line x1="80" y1="70" x2="90" y2="55" stroke="currentColor" stroke-width="2"/>
+                    <line x1="20" y1="70" x2="30" y2="55" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            `;
+        }
+
+        function renderCylinder() {
+            return `
+                <svg width="150" height="150" viewBox="0 0 100 100">
+                    <ellipse cx="50" cy="25" rx="25" ry="10" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <ellipse cx="50" cy="75" rx="25" ry="10" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <line x1="25" y1="25" x2="25" y2="75" stroke="currentColor" stroke-width="2"/>
+                    <line x1="75" y1="25" x2="75" y2="75" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            `;
+        }
+
+        function renderCone() {
+            return `
+                <svg width="150" height="150" viewBox="0 0 100 100">
+                    <ellipse cx="50" cy="75" rx="30" ry="10" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <line x1="50" y1="15" x2="20" y2="75" stroke="currentColor" stroke-width="2"/>
+                    <line x1="50" y1="15" x2="80" y2="75" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            `;
+        }
+
+        function renderSphere() {
+            return `
+                <svg width="150" height="150" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <ellipse cx="50" cy="50" rx="35" ry="10" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <line x1="15" y1="50" x2="85" y2="50" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            `;
+        }
+
+        function renderTriangularPrism() {
+            return `
+                <svg width="150" height="150" viewBox="0 0 100 100">
+                    <polygon points="30,70 70,70 50,30" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <polygon points="40,60 80,60 60,20" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <line x1="30" y1="70" x2="40" y2="60" stroke="currentColor" stroke-width="2"/>
+                    <line x1="70" y1="70" x2="80" y2="60" stroke="currentColor" stroke-width="2"/>
+                    <line x1="50" y1="30" x2="60" y2="20" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            `;
+        }
+
+        function renderSquarePyramid() {
+            return `
+                <svg width="150" height="150" viewBox="0 0 100 100">
+                    <polygon points="30,70 70,70 70,30 30,30" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <line x1="30" y1="70" x2="50" y2="15" stroke="currentColor" stroke-width="2"/>
+                    <line x1="70" y1="70" x2="50" y2="15" stroke="currentColor" stroke-width="2"/>
+                    <line x1="30" y1="30" x2="50" y2="15" stroke="currentColor" stroke-width="2"/>
+                    <line x1="70" y1="30" x2="50" y2="15" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            `;
+        }
+
+        function renderTriangularPyramid() {
+            return `
+                <svg width="150" height="150" viewBox="0 0 100 100">
+                    <polygon points="30,70 70,70 50,30" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <line x1="30" y1="70" x2="50" y2="15" stroke="currentColor" stroke-width="2"/>
+                    <line x1="70" y1="70" x2="50" y2="15" stroke="currentColor" stroke-width="2"/>
+                    <line x1="50" y1="30" x2="50" y2="15" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            `;
+        }
+
+        function renderPolygonalPrism(sides) {
+            return `
+                <svg width="150" height="150" viewBox="0 0 100 100">
+                    <polygon points="${generatePolygonPoints(50, 70, 30, sides)}" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <polygon points="${generatePolygonPoints(60, 60, 30, sides)}" fill="none" stroke="currentColor" stroke-width="2"/>
+                    ${generatePrismLines(50, 70, 60, 60, 30, sides)}
+                </svg>
+            `;
+        }
+
+        function renderPolygonalPyramid(sides) {
+            return `
+                <svg width="150" height="150" viewBox="0 0 100 100">
+                    <polygon points="${generatePolygonPoints(50, 70, 30, sides)}" fill="none" stroke="currentColor" stroke-width="2"/>
+                    ${generatePyramidLines(50, 70, 50, 20, 30, sides)}
+                </svg>
+            `;
+        }
+
+        function generatePolygonPoints(centerX, centerY, radius, sides) {
+            let points = [];
+            for (let i = 0; i < sides; i++) {
+                const angle = (i * 2 * Math.PI / sides) - Math.PI/2;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+                points.push(`${x},${y}`);
+            }
+            return points.join(' ');
+        }
+
+        function generatePrismLines(centerX1, centerY1, centerX2, centerY2, radius, sides) {
+            let lines = '';
+            for (let i = 0; i < sides; i++) {
+                const angle = (i * 2 * Math.PI / sides) - Math.PI/2;
+                const x1 = centerX1 + radius * Math.cos(angle);
+                const y1 = centerY1 + radius * Math.sin(angle);
+                const x2 = centerX2 + radius * Math.cos(angle);
+                const y2 = centerY2 + radius * Math.sin(angle);
+                lines += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="currentColor" stroke-width="2"/>`;
+            }
+            return lines;
+        }
+
+        function generatePyramidLines(centerX, centerY, apexX, apexY, radius, sides) {
+            let lines = '';
+            for (let i = 0; i < sides; i++) {
+                const angle = (i * 2 * Math.PI / sides) - Math.PI/2;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+                lines += `<line x1="${x}" y1="${y}" x2="${apexX}" y2="${apexY}" stroke="currentColor" stroke-width="2"/>`;
+            }
+            return lines;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', init);
+        startBtn.addEventListener('click', startQuiz);
+        prevBtn.addEventListener('click', goToPrevQuestion);
+        nextBtn.addEventListener('click', goToNextQuestion);
+        finishBtn.addEventListener('click', confirmFinish);
+        restartBtn.addEventListener('click', resetQuiz);
+        cancelBtn.addEventListener('click', hideConfirmationDialog);
+        confirmBtn.addEventListener('click', () => {
+            hideConfirmationDialog();
+            finishQuiz();
+        });
+
+        // Functions
+        function init() {
+            // Initialize anything needed when the page loads
+            updateButtonStates();
+        }
+
+        function startQuiz() {
+            const duration = parseInt(durationInput.value);
+            if (isNaN(duration) || duration < 1 || duration > 60) {
+                showCustomAlert('Durasi harus antara 1-60 menit!');
+                return;
+            }
+
+            currentMode = modeSelect.value;
+            currentDifficulty = difficultySelect.value;
+            totalDuration = duration * 60; // convert to seconds
+            timeLeft = totalDuration;
+            
+            // Filter questions based on difficulty
+            if (currentDifficulty === 'semua') {
+                // Use all questions, but limit to max 10 of each difficulty for balance
+                const easyQuestions = allQuestions.filter(q => q.difficulty === 'mudah').slice(0, 10);
+                const mediumQuestions = allQuestions.filter(q => q.difficulty === 'sedang').slice(0, 10);
+                const hardQuestions = allQuestions.filter(q => q.difficulty === 'sulit').slice(0, 10);
+                
+                // Combine and shuffle questions
+                currentQuestions = [...easyQuestions, ...mediumQuestions, ...hardQuestions];
+                shuffleArray(currentQuestions);
+                
+                // If limited time, restrict to 10-15 questions
+                if (duration <= 15) {
+                    currentQuestions = currentQuestions.slice(0, 12);
+                } else if (duration <= 30) {
+                    currentQuestions = currentQuestions.slice(0, 20);
+                }
+            } else {
+                currentQuestions = allQuestions.filter(q => q.difficulty === currentDifficulty);
+                shuffleArray(currentQuestions);
+            }
+            
+            // Reset user answers array
+            userAnswers = new Array(currentQuestions.length).fill(null);
+            
+            // Set up timer
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Display current mode and difficulty
+            currentModeEl.textContent = currentMode === 'test' ? 'Test Mode' : 'Study Mode';
+            difficultyBadge.textContent = capitalizeFirstLetter(currentDifficulty);
+            difficultyBadge.className = `difficulty-badge ${currentDifficulty}`;
+            
+            // Create question navigation
+            createQuestionNav();
+            
+            // Display first question
+            currentQuestion = 0;
+            displayQuestion();
+            updateProgressBar();
+            
+            // Show quiz screen, hide welcome screen
+            welcomeScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+        }
+
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function createQuestionNav() {
+            questionNav.innerHTML = '';
+            for (let i = 0; i < currentQuestions.length; i++) {
+                const questionBtn = document.createElement('div');
+                questionBtn.className = 'question-number ' + (i === 0 ? 'active' : '');
+                questionBtn.textContent = i + 1;
+                questionBtn.addEventListener('click', () => navigateToQuestion(i));
+                questionNav.appendChild(questionBtn);
+            }
+        }
+
+        function navigateToQuestion(index) {
+            if (index >= 0 && index < currentQuestions.length) {
+                currentQuestion = index;
+                displayQuestion();
+                updateButtonStates();
+                updateProgressBar();
+                
+                // Update active question in navigation
+                const questionBtns = questionNav.querySelectorAll('.question-number');
+                questionBtns.forEach((btn, i) => {
+                    btn.classList.toggle('active', i === currentQuestion);
+                });
+            }
+        }
+
+        function displayQuestion() {
+            const question = currentQuestions[currentQuestion];
+            questionNumberEl.textContent = currentQuestion + 1;
+            questionTextEl.textContent = question.question;
+            
+            // Display shape image if available
+            if (question.shape) {
+                questionImageContainer.classList.remove('hidden');
+                questionImage.innerHTML = question.shape;
+            } else {
+                questionImageContainer.classList.add('hidden');
+            }
+            
+            // Create options
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionBtn = document.createElement('button');
+                optionBtn.className = 'option-btn w-full text-left p-3 rounded-md';
+                
+                if (userAnswers[currentQuestion] === index) {
+                    optionBtn.classList.add('selected');
+                }
+                
+                optionBtn.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+                optionBtn.addEventListener('click', () => selectOption(index));
+                optionsContainer.appendChild(optionBtn);
+            });
+            
+            // Show/hide explanation based on mode and whether question has been answered
+            updateExplanationVisibility();
+            
+            // Update question navigation to show answered questions
+            updateQuestionNav();
+        }
+
+        function selectOption(index) {
+            // Store user answer
+            userAnswers[currentQuestion] = index;
+            
+            // Update option appearance
+            const optionBtns = optionsContainer.querySelectorAll('.option-btn');
+            optionBtns.forEach((btn, i) => {
+                btn.classList.toggle('selected', i === index);
+            });
+            
+            // In study mode, show correct/incorrect immediately
+            if (currentMode === 'study') {
+                const correctIndex = currentQuestions[currentQuestion].correctIndex;
+                
+                optionBtns.forEach((btn, i) => {
+                    if (i === correctIndex) {
+                        btn.classList.add('correct');
+                    } else if (i === index && index !== correctIndex) {
+                        btn.classList.add('incorrect');
+                    }
+                });
+                
+                // Show explanation
+                showExplanation();
+            }
+            
+            updateQuestionNav();
+            updateProgressBar();
+        }
+
+        function updateExplanationVisibility() {
+            // In test mode, explanations are shown only at the end
+            // In study mode, explanations are shown after answering each question
+            if (currentMode === 'study' && userAnswers[currentQuestion] !== null) {
+                showExplanation();
+            } else {
+                explanationContainer.classList.add('hidden');
+            }
+        }
+
+        function showExplanation() {
+            const explanation = currentQuestions[currentQuestion].explanation;
+            explanationTextEl.innerHTML = markdown.makeHtml(explanation);
+            explanationContainer.classList.remove('hidden');
+        }
+
+        function goToPrevQuestion() {
+            if (currentQuestion > 0) {
+                navigateToQuestion(currentQuestion - 1);
+            }
+        }
+
+        function goToNextQuestion() {
+            if (currentQuestion < currentQuestions.length - 1) {
+                navigateToQuestion(currentQuestion + 1);
+            } else {
+                confirmFinish();
+            }
+        }
+
+        function updateButtonStates() {
+            prevBtn.disabled = currentQuestion === 0;
+            
+            // Update next and finish button states
+            if (currentQuestion < currentQuestions.length - 1) {
+                nextBtn.textContent = 'Selanjutnya';
+                nextBtn.classList.remove('hidden');
+                finishBtn.style.display = ''; // Keep finish button always visible
+            } else {
+                // On last question, make next button say "Selesai"
+                nextBtn.textContent = 'Selesai';
+            }
+        }
+
+        function updateQuestionNav() {
+            const questionBtns = questionNav.querySelectorAll('.question-number');
+            questionBtns.forEach((btn, i) => {
+                btn.classList.toggle('answered', userAnswers[i] !== null);
+            });
+        }
+
+        function updateProgressBar() {
+            const answeredCount = userAnswers.filter(answer => answer !== null).length;
+            const progressPercentage = (answeredCount / currentQuestions.length) * 100;
+            progressBarFill.style.width = `${progressPercentage}%`;
+        }
+
+        function updateTimer() {
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                finishQuiz();
+                return;
+            }
+            
+            timeLeft--;
+            
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function confirmFinish() {
+            const answeredCount = userAnswers.filter(answer => answer !== null).length;
+            const unansweredCount = currentQuestions.length - answeredCount;
+            
+            if (unansweredCount > 0) {
+                // Show custom confirmation dialog instead of browser confirm()
+                confirmationMessage.textContent = `Masih ada ${unansweredCount} soal yang belum dijawab. Yakin ingin menyelesaikan?`;
+                showConfirmationDialog();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function showConfirmationDialog() {
+            confirmationDialog.classList.remove('hidden');
+        }
+
+        function hideConfirmationDialog() {
+            confirmationDialog.classList.add('hidden');
+        }
+
+        function showCustomAlert(message) {
+            // Create and show a custom alert instead of using browser alert()
+            confirmationMessage.textContent = message;
+            confirmBtn.textContent = 'OK';
+            cancelBtn.classList.add('hidden');
+            showConfirmationDialog();
+            
+            // Set up a one-time event handler for the OK button
+            const handleOk = () => {
+                hideConfirmationDialog();
+                cancelBtn.classList.remove('hidden');
+                confirmBtn.textContent = 'Lanjutkan';
+                confirmBtn.removeEventListener('click', handleOk);
+            };
+            
+            confirmBtn.addEventListener('click', handleOk, { once: true });
+        }
+
+        function finishQuiz() {
+            // Stop timer
+            clearInterval(timerInterval);
+            
+            // Calculate score
+            let correctCount = 0;
+            userAnswers.forEach((answer, index) => {
+                if (answer === currentQuestions[index].correctIndex) {
+                    correctCount++;
+                }
+            });
+            
+            const percentage = Math.round((correctCount / currentQuestions.length) * 100);
+            
+            // Display results
+            scoreEl.textContent = correctCount;
+            totalQuestionsEl.textContent = currentQuestions.length;
+            scorePercentageEl.textContent = `${percentage}%`;
+            
+            // Calculate time taken
+            const timeTaken = totalDuration - timeLeft;
+            const minutesTaken = Math.floor(timeTaken / 60);
+            const secondsTaken = timeTaken % 60;
+            timeTakenEl.textContent = `Waktu: ${minutesTaken.toString().padStart(2, '0')}:${secondsTaken.toString().padStart(2, '0')}`;
+            
+            // Generate results details
+            generateResultsDetails();
+            
+            // Show results screen, hide quiz screen
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+        }
+
+        function generateResultsDetails() {
+            resultsDetailsEl.innerHTML = '';
+            
+            currentQuestions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === question.correctIndex;
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 rounded-lg ' + (isCorrect ? 'bg-green-100 dark:bg-green-900' : 'bg-red-100 dark:bg-red-900');
+                
+                const difficultyLabel = {
+                    'mudah': 'Mudah',
+                    'sedang': 'Sedang',
+                    'sulit': 'Sulit'
+                };
+                
+                const difficultyClass = {
+                    'mudah': 'bg-green-500',
+                    'sedang': 'bg-yellow-500',
+                    'sulit': 'bg-red-500'
+                };
+                
+                const resultContent = `
+                    <div class="flex items-start">
+                        <div class="mr-2 text-xl ${isCorrect ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">
+                            ${isCorrect ? '✓' : '✗'}
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium mb-1 flex items-center">
+                                <span>Soal ${index + 1}:</span>
+                                <span class="ml-2 px-2 py-0.5 rounded text-xs text-white ${difficultyClass[question.difficulty]}">
+                                    ${difficultyLabel[question.difficulty]}
+                                </span>
+                            </div>
+                            <div class="mb-2">${question.question}</div>
+                            <div class="mb-1">
+                                Jawaban anda: ${userAnswer !== null ? question.options[userAnswer] : 'Tidak dijawab'}
+                            </div>
+                            <div class="mb-2">
+                                Jawaban benar: ${question.options[question.correctIndex]}
+                            </div>
+                            <div class="text-sm p-2 bg-white bg-opacity-50 dark:bg-black dark:bg-opacity-50 rounded">
+                                <strong>Pembahasan:</strong> ${question.explanation}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                resultItem.innerHTML = resultContent;
+                resultsDetailsEl.appendChild(resultItem);
+            });
+        }
+
+        function resetQuiz() {
+            // Reset to welcome screen
+            resultsScreen.classList.add('hidden');
+            welcomeScreen.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
